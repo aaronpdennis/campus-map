@@ -3,84 +3,61 @@
 <head>
   <meta charset=utf-8 />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  
+
   <!-- The title of our web page -->
   <title>Penn State Map</title>
-  
-  
-  
-  
+
+
+
+
   <!-- PRE-WRITTEN CODE LIBRARIES -->
-  
+
   <!-- Load jQuery and jQuery UI javascript library for search bar interaction and loading JSON data -->
   <script src='./js/jquery/jquery.min.js'></script>
   <script src="./js/jquery/jquery-ui.min.js"></script>
   <link rel="stylesheet" href="./js/jquery/jquery-ui-1.10.3.theme.css" />
-  
+
   <!-- Load Bootstrap library for formatting appearance of search bar and other elements -->
   <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css'>
   <script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js'></script>
-  
-  <!-- Load Mapbox.js library, which is built on top of Leaflet and includes full Leaflet functionality -->
-  <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.5/mapbox.js'></script>
-  <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.5/mapbox.css' rel='stylesheet' />
-  
-  <!-- Load Leaflet plugin for finding the user's location -->
-  <script src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.24.0/L.Control.Locate.js'></script>
-  <link href='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.24.0/L.Control.Locate.css' rel='stylesheet' />
-  <!--[if lt IE 9]>
-  <link href='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.21.0/L.Control.Locate.ie.css' rel='stylesheet' />
-  <![endif]-->
-  
-  <!-- Load Mapbox.js plugin for adding location hash to webpage URL -->
-  <script src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-hash/v0.2.1/leaflet-hash.js'></script>
-  
-  
-  
-  
+
+  <!--- Mapbox GL -->
+  <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.11.1/mapbox-gl.js'></script>
+  <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.11.1/mapbox-gl.css' rel='stylesheet' />
+
   <!-- CUSTOM CSS STYLESHEETS -->
-  
+
   <!-- Load in our custom CSS stylesheet -->
   <link rel="stylesheet" href="css/stylesheet.css" />
-  
-  
-  
-  
+
+
+
+
 </head>
 
 <body>
-  
-  
+
+
   <!-- BASIC STRUCTURE OF WEB PAGE -->
-  
+
   <!-- Create a `div` with the ID "#bar" where we'll place the searchbar input -->
   <div id='bar'>
     <!-- Create an `input` field for users to type their searches into. It has the placeholder suggestion, "Search for building..." -->
     <input id='search' class='form-control' placeholder='Search for building...'>
   </div>
-  
+
   <!-- Create a `div` with the ID "#map" where we'll place our map -->
   <div id='map' class='map'></div>
-  
-  
-  
-  <script src="js/leaflet.ajax.min.js"></script>
+
   <!-- CUSTOM JAVASCRIPT -->
-  
+
   <!-- Each `<script>` tag loads and runs a file of our javascript code, which we're storing in the `js` folder/directory -->
-  
+
   <!-- This script uses Mapbox.js and Leaflet.js to add our base map tiles to the `#map` `div` -->
   <script src="js/load-map.js"></script>
-  
-  <!-- This script loads in the live data overlay from the GeoJSON file and adds it on top of the map -->
-  <script src="js/add-overlay.js"></script>
-  
+
   <!-- This script loads in the center points of campus buildings, sets up the search bar, and adds pop-ups to the center points -->
   <script src="js/buildings.js"></script>
-  
-  <!-- DOES NOT WORK YET. This script requests live bus information from the CATA API and then does stuff with that data. -->
-  <script src="js/add-transit.js"></script>
-  
-  
+
 </body>
 </html>
