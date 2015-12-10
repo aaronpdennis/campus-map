@@ -1,3 +1,4 @@
+
 // The first line here loads the data in the building-centroids GeoJSON file
 $.getJSON("https://cdn.rawgit.com/pennstategeog467/campus-map/gh-pages/data/building-centroids.json", function(centroids) {
 
@@ -10,6 +11,24 @@ $.getJSON("https://cdn.rawgit.com/pennstategeog467/campus-map/gh-pages/data/buil
 
   // Because everything we do after this depends on the JSON file being loaded, the above line waits for the JSON file to be loaded,
   // then the browser will proceed with the below code. The data from the JSON file is the variable `centroids`.
+
+  function getBuildings(value) {
+    var api = 'https://apps.opp.psu.edu/fis-api/v1/buildings?name:ilike=*';
+    $.getJSON(api + value + '*', function(data) {
+
+      var searchResults = [];
+
+      data.map(function(d) {
+        searchResults.push({
+          'category': d.college,
+          'label': d.name,
+          'id': d.id,
+          'latLong': d.latLong
+        });
+      });
+
+    })
+  }
 
   $.widget( "custom.catcomplete", $.ui.autocomplete, {
     _create: function() {
@@ -42,6 +61,9 @@ $.getJSON("https://cdn.rawgit.com/pennstategeog467/campus-map/gh-pages/data/buil
         autoFocus: true,
         select: function (event, ui) { // An event listener that does the following code once an option from the autocomplete menu is selected
             setTimeout(focusMap, 50); // When an option is selected, zoom to that point. The focusMap function is definded below.
+        },
+        search: function () {
+          this.source = getBuildings(this.value);
         }
     });
   });
