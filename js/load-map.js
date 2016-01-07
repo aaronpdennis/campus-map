@@ -1,5 +1,5 @@
 // This access token allows us to use Mapbox's API
-mapboxgl.accessToken = 'pk.eyJ1IjoiYWFyb25kZW5uaXMiLCJhIjoiem5LLURoYyJ9.T3tswGTI5ve8_wE-a02cMw';
+mapboxgl.accessToken = 'pk.eyJ1IjoibWRlZnJhdHRpIiwiYSI6IndDOVJ2NmMifQ.H8GBc8poxw4tU9GkfvAlWQ';
 
 // Set the maximum bounds so the map user doesn't pan too far from campus
 var southWest = [40.7643, -77.9043], // south-west corner of maximum view
@@ -7,7 +7,7 @@ var southWest = [40.7643, -77.9043], // south-west corner of maximum view
 
 var map = new mapboxgl.Map({
   container: 'map', // container id
-  style: 'mapbox://styles/aarondennis/cij4mel36000690m3lqaixibk',
+  style: 'mapbox://styles/mdefratti/cihnp3l7o007h91kn5ulf6f22',
   hash: false,
   center: [-77.86, 40.8],
   bearing: -45,
