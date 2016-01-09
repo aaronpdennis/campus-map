@@ -1,61 +1,143 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset=utf-8 />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+   <meta charset='utf-8' />
 
-  <!-- The title of our web page -->
-  <title>Penn State Map</title>
+   <title>Penn State Map</title>
 
+   <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
 
-  <!-- PRE-WRITTEN CODE LIBRARIES -->
+   <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.12.2/mapbox-gl.js'></script>
+   <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.12.2/mapbox-gl.css' rel='stylesheet' />
 
-  <!-- Load jQuery and jQuery UI javascript library for search bar interaction and loading JSON data -->
-  <script src='./js/jquery/jquery.min.js'></script>
-  <script src="./js/jquery/jquery-ui.min.js"></script>
-  <link rel="stylesheet" href="./js/jquery/jquery-ui-1.10.3.theme.css" />
+   <script src='./jquery-2.1.4.min.js'></script>
 
-  <!-- Load Bootstrap library for formatting appearance of search bar and other elements -->
-  <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css'>
-  <script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js'></script>
+   <link href='./bootstrap.min.css' rel='stylesheet' />
+   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
-  <!--- Mapbox GL -->
-  <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.11.1/mapbox-gl.js'></script>
-  <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.11.1/mapbox-gl.css' rel='stylesheet' />
+   <link href="./jquery-ui.min.css" rel="stylesheet" />
+   <script src="./jquery-ui.min.js"></script>
 
-  <!-- CUSTOM CSS STYLESHEETS -->
-
-  <!-- Load in our custom CSS stylesheet -->
-  <link rel="stylesheet" href="css/stylesheet.css" />
-
-
-
+   <style>
+       body { margin:0; padding:0; }
+       #map { position:absolute; top:0; bottom:0; width:100%; }
+       img {
+         margin: 1em;
+         height:4em;
+       }
+       #search {
+         margin-bottom: 0;
+         margin-top: 1em;
+       }
+       input {
+         min-width: 16em;
+         max-width: 90%;
+         margin-left: 1em;
+       }
+       .ui-menu {
+         background: white;
+         max-height: 30em;
+         overflow-y: scroll;
+         box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
+       }
+       .ui-menu-item {
+         padding: 15px;
+         background-color: #fff;
+         border-bottom: 1px solid #dddddd;
+         margin-bottom: -1px;
+       }
+       .ui-state-focus {
+         background-color: #2196f3;
+         color: #fff;
+       }
+   </style>
 
 </head>
-
 <body>
 
+<div id='map'></div>
 
-  <!-- BASIC STRUCTURE OF WEB PAGE -->
+<div class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <img class="image-responsive navbar-left" src='./psu.png' /><a class="navbar-brand" href="#"></a>
+      <form id='search' class="navbar-form navbar-left" role="search">
+        <div class="form-group">
+          <div class="ui-widget">
+            <input type='text' class='form-control' id="tags" placeholder="Search for a building...">
+          </div>
+        </div>
+      </form>
+    </div>
 
-  <!-- Create a `div` with the ID "#bar" where we'll place the searchbar input -->
-  <div id='bar'>
-    <!-- Create an `input` field for users to type their searches into. It has the placeholder suggestion, "Search for building..." -->
-    <input id='search' class='form-control' placeholder='Search for building...'>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="#">Download </a></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Options <span class="caret"></span></a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="#gameday">Gameday</a></li>
+            <li><a href="#biking">Biking</a></li>
+            <li><a href="#construction">Construction</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
   </div>
+</div>
 
-  <!-- Create a `div` with the ID "#map" where we'll place our map -->
-  <div id='map' class='map'></div>
+<script>
 
-  <!-- CUSTOM JAVASCRIPT -->
+mapboxgl.accessToken = 'pk.eyJ1IjoiYWFyb25kZW5uaXMiLCJhIjoiem5LLURoYyJ9.T3tswGTI5ve8_wE-a02cMw';
+var map = new mapboxgl.Map({
+    container: 'map', // container id
+    style: 'mapbox://styles/aarondennis/cij4mel36000690m3lqaixibk', //stylesheet location
+    center: [-77.86155,40.80174],
+    zoom: 15,
+    bearing: -44.5,
+    pitch: 0,
+    preserveDrawingBuffer: true
+});
 
-  <!-- Each `<script>` tag loads and runs a file of our javascript code, which we're storing in the `js` folder/directory -->
+$.getJSON('./places.geojson', function(data) {
 
-  <!-- This script uses Mapbox.js and Leaflet.js to add our base map tiles to the `#map` `div` -->
-  <script src="js/load-map.js"></script>
+  var availableTags = [],
+      buildings = {};
 
-  <!-- This script loads in the center points of campus buildings, sets up the search bar, and adds pop-ups to the center points -->
-  <script src="js/buildings.js"></script>
+  var list = data.features.sort(function(a,b) {
+    return parseInt(a.properties.number) - parseInt(b.properties.number);
+  }).map(function(d) {
+    availableTags.push(d.properties.name);
+    buildings[d.properties.name] = { id: d.properties.number, coordinates: d.geometry.coordinates };
+  });
+
+  $("#tags").autocomplete({
+    source: availableTags,
+    minLength: 2,
+    select: function(event, ui) {
+      location.hash = buildings[ui.item.label].id;
+
+      var filter = ["==", "BLDG_NUM", buildings[ui.item.label].id + '0'];
+      map.setFilter('psu-buildings-highlight-fill', filter);
+      map.setFilter('psu-buildings-highlight-case', filter);
+      map.setFilter('psu-building-label-highlight', filter);
+
+      var coordinates = [buildings[ui.item.label].coordinates[0], buildings[ui.item.label].coordinates[1]];
+      map.flyTo({center: coordinates, zoom: 16.5});
+
+    }
+  });
+
+});
+
+
+</script>
 
 </body>
-</html>
