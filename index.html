@@ -132,6 +132,25 @@ $.getJSON('./places.geojson', function(data) {
       var coordinates = [buildings[ui.item.label].coordinates[0], buildings[ui.item.label].coordinates[1]];
       map.flyTo({center: coordinates, zoom: 16.5});
 
+    },
+    open: function(event, ui) {
+
+      var query = $("#tags").val();
+
+      if (buildings[query]) {
+
+        location.hash = buildings[query].id;
+
+        var filter = ["==", "BLDG_NUM", buildings[query].id + '0'];
+        map.setFilter('psu-buildings-highlight-fill', filter);
+        map.setFilter('psu-buildings-highlight-case', filter);
+        map.setFilter('psu-building-label-highlight', filter);
+
+        var coordinates = [buildings[query].coordinates[0], buildings[query].coordinates[1]];
+        map.flyTo({center: coordinates, zoom: 16.5});
+
+      }
+
     }
   });
 
