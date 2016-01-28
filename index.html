@@ -50,28 +50,12 @@
          background-color: #2196f3;
          color: #fff;
        }
-
-       #info {
-        display: block;
-        position: absolute;
-        bottom: 0;
-        height: auto;
-        width: 50%;
-        padding: 10px;
-        border: none;
-        border-radius: 3px;
-        font-size: 12px;
-        text-align: center;
-        color: #222;
-        background: #fff;
-    }
    </style>
 
 </head>
 <body>
 
 <div id='map'></div>
-<pre id='info'></pre>
 
 <div class="navbar navbar-default">
   <div class="container-fluid">
@@ -111,6 +95,11 @@
 
 <script>
 
+var bounds = [
+    [-78.199, 40.591], // Southwest coordinates
+    [-77.544, 41.020]  // Northeast coordinates
+];
+
 mapboxgl.accessToken = 'pk.eyJ1IjoiYWFyb25kZW5uaXMiLCJhIjoiem5LLURoYyJ9.T3tswGTI5ve8_wE-a02cMw';
 var map = new mapboxgl.Map({
     container: 'map', // container id
@@ -119,8 +108,13 @@ var map = new mapboxgl.Map({
     zoom: 15,
     bearing: -44.5,
     pitch: 0,
+    maxBounds: bounds,
+    maxZoom: 20, 
     preserveDrawingBuffer: true
 });
+
+// disable map rotation using touch rotation gesture
+map.touchZoomRotate.disableRotation();
 
 $.getJSON('./places.geojson', function(data) {
 
@@ -146,17 +140,6 @@ $.getJSON('./places.geojson', function(data) {
         zoomToLocation(query);
       }
     }
-  });
-
-  map.on('click', function (e) {
-    map.featuresAt(e.point, {radius: 5}, function (err, features) {
-      if (err) throw err;
-      document.getElementById('info').innerHTML =
-        JSON.stringify([e.lngLat.lng, e.lngLat.lat]) + '\n' +
-        JSON.stringify(features.filter(function(d) {
-          return d.layer.id === "psu-buildings";
-        })[0].properties.BLDG_NUM);
-    });
   });
 
   function zoomToLocation(query) {
