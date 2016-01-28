@@ -50,12 +50,28 @@
          background-color: #2196f3;
          color: #fff;
        }
+
+       #info {
+        display: block;
+        position: absolute;
+        bottom: 0;
+        height: auto;
+        width: 50%;
+        padding: 10px;
+        border: none;
+        border-radius: 3px;
+        font-size: 12px;
+        text-align: center;
+        color: #222;
+        background: #fff;
+    }
    </style>
 
 </head>
 <body>
 
 <div id='map'></div>
+<pre id='info'></pre>
 
 <div class="navbar navbar-default">
   <div class="container-fluid">
@@ -118,44 +134,51 @@ $.getJSON('./places.geojson', function(data) {
     buildings[d.properties.name] = { id: d.properties.number, coordinates: d.geometry.coordinates };
   });
 
+  console.log(buildings);
+
   $("#tags").autocomplete({
     source: availableTags,
     minLength: 2,
     select: function(event, ui) {
-      location.hash = buildings[ui.item.label].id;
-
-      var filter = ["==", "BLDG_NUM", buildings[ui.item.label].id + '0'];
-      map.setFilter('psu-buildings-highlight-fill', filter);
-      map.setFilter('psu-buildings-highlight-case', filter);
-      map.setFilter('psu-building-label-highlight', filter);
-
-      var coordinates = [buildings[ui.item.label].coordinates[0], buildings[ui.item.label].coordinates[1]];
-      map.flyTo({center: coordinates, zoom: 16.5});
-
+      zoomToLocation(ui.item.label);
     },
     open: function(event, ui) {
-
       var query = $("#tags").val();
-
       if (buildings[query]) {
-
-        location.hash = buildings[query].id;
-
-        var filter = ["==", "BLDG_NUM", buildings[query].id + '0'];
-        map.setFilter('psu-buildings-highlight-fill', filter);
-        map.setFilter('psu-buildings-highlight-case', filter);
-        map.setFilter('psu-building-label-highlight', filter);
-
-        var coordinates = [buildings[query].coordinates[0], buildings[query].coordinates[1]];
-        map.flyTo({center: coordinates, zoom: 16.5});
-
+        zoomToLocation(query);
       }
-
     }
   });
 
-});
+  map.on('click', function (e) {
+    map.featuresAt(e.point, {radius: 5}, function (err, features) {
+      if (err) throw err;
+      document.getElementById('info').innerHTML =
+        JSON.stringify([e.lngLat.lng, e.lngLat.lat]) + '\n' +
+        JSON.stringify(features.filter(function(d) {
+          return d.layer.id === "psu-buildings";
+        })[0].properties.BLDG_NUM);
+    });
+  });
 
+  function zoomToLocation(query) {
+    buildingID = buildings[query].id;
+    console.log(buildingID.length);
+    while (buildingID.length < 7) {
+      buildingID = '0' + buildingID;
+    }
+    location.hash = buildingID;
+
+    var filter = ["==", "BLDG_NUM", buildingID];
+    map.setFilter('psu-buildings-highlight-fill', filter);
+    map.setFilter('psu-buildings-highlight-case', filter);
+    map.setFilter('psu-building-label-highlight', filter);
+
+    var coordinates = [buildings[query].coordinates[0], buildings[query].coordinates[1]];
+    map.flyTo({center: coordinates, zoom: 16.5});
+  }
+
+});
 
 </script>
 
