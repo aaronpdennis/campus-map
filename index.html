@@ -134,8 +134,6 @@ $.getJSON('./places.geojson', function(data) {
     buildings[d.properties.name] = { id: d.properties.number, coordinates: d.geometry.coordinates };
   });
 
-  console.log(buildings);
-
   $("#tags").autocomplete({
     source: availableTags,
     minLength: 2,
@@ -163,7 +161,6 @@ $.getJSON('./places.geojson', function(data) {
 
   function zoomToLocation(query) {
     buildingID = buildings[query].id;
-    console.log(buildingID.length);
     while (buildingID.length < 7) {
       buildingID = '0' + buildingID;
     }
