@@ -70,20 +70,26 @@
 </head>
 <body>
 
-<div id='map'></div>
+  <div id='map'></div>
 
-<div class="navbar navbar-default">
-
-
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <img class="image-responsive navbar-left" src='./psu.png' /><a class="navbar-brand" href="#"></a>
+  <div class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <img class="image-responsive navbar-left" src='./psu.png' /><a class="navbar-brand" href="#"></a>
+        <form id='search' class="navbar-form navbar-left" role="search">
+          <div class="form-group">
+            <div class="ui-widget">
+              <input type='text' class='form-control' id="tags" placeholder="Search for a building...">
+            </div>
+          </div>
+        </form>
+      </div>
 
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav navbar-right">
@@ -101,17 +107,8 @@
         </ul>
       </div>
 
-      <form id='search' class="navbar-form navbar-left" role="search">
-        <div class="form-group">
-          <div class="ui-widget">
-            <input type='text' class='form-control' id="tags" placeholder="Search for a building...">
-          </div>
-        </div>
-      </form>
     </div>
-
   </div>
-</div>
 
 <script>
 
