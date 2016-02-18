@@ -38,10 +38,24 @@
        .navbar-toggle {
          margin-top: 0;
        }
+       #clear {
+         width: auto;
+         max-width: 1.2em;
+         opacity: 0;
+         float: left;
+         margin-top: 0.8em;
+         margin-right: 0.6em;
+         pointer-events: none;
+       }
+       #clear:hover {
+         opacity: 1;
+         cursor: pointer;
+       }
        input {
-         min-width: 16em;
-         max-width: 90%;
-         margin-left: 1em;
+         min-width: 18em;
+         max-width: 18em;
+         margin-left: 0em;
+         margin-right: 0;
        }
        .ui-menu {
          background: white;
@@ -84,7 +98,8 @@
         <img class="image-responsive navbar-left" src='./psu.png' /><a class="navbar-brand" href="#"></a>
         <form id='search' class="navbar-form navbar-left" role="search">
           <div class="form-group">
-            <div class="ui-widget">
+            <div class="ui-widget row">
+              <img src='./x.svg' id="clear" />
               <input type='text' class='form-control' id="tags" placeholder="Search for a building...">
             </div>
           </div>
@@ -94,7 +109,7 @@
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav navbar-right">
           <li><a id="download" class="options" href="#">Download </a></li>
-          <li class="dropdown options">
+          <!--<li class="dropdown options">
             <a href="#" class="dropdown-toggle options" data-toggle="dropdown" role="button" aria-expanded="false">Options <span class="caret"></span></a>
             <ul class="dropdown-menu" role="menu">
               <li><a href="#gameday" class="not-active">Bus Routes</a></li>
@@ -103,7 +118,7 @@
               <li><a href="#biking" class="not-active">Biking</a></li>
               <li><a href="#construction" class="not-active">Construction</a></li>
             </ul>
-          </li>
+          </li>-->
         </ul>
       </div>
 
@@ -111,32 +126,6 @@
   </div>
 
 <script>
-
-var bounds = [
-    [-78.199, 40.591], // Southwest coordinates
-    [-77.544, 41.020]  // Northeast coordinates
-];
-
-mapboxgl.accessToken = 'pk.eyJ1IjoiYWFyb25kZW5uaXMiLCJhIjoiem5LLURoYyJ9.T3tswGTI5ve8_wE-a02cMw';
-var map = new mapboxgl.Map({
-    container: 'map', // container id
-    style: 'mapbox://styles/aarondennis/cij4mel36000690m3lqaixibk', //stylesheet location
-    center: [-77.86155,40.80174],
-    zoom: 15,
-    bearing: -44.5,
-    pitch: 0,
-    maxBounds: bounds,
-    maxZoom: 20,
-    preserveDrawingBuffer: true
-});
-
-// disable map rotation using touch rotation gesture
-map.touchZoomRotate.disableRotation();
-
-$("#download").on('click', function() {
-  var url = map.getCanvas().toDataURL();
-  window.open(url, '_blank');
-})
 
 $.getJSON('./places.geojson', function(data) {
 
@@ -150,19 +139,78 @@ $.getJSON('./places.geojson', function(data) {
     buildings[d.properties.name] = { id: d.properties.number, coordinates: d.geometry.coordinates };
   });
 
+  var bounds = [
+      [-78.199, 40.591], // Southwest coordinates
+      [-77.544, 41.020]  // Northeast coordinates
+  ];
+
+  var center = [-77.86155,40.80174];
+  var zoom = 14.5;
+  var filter = ["==", "BLDG_NUM", ""];
+
+  if (location.hash !== '') {
+    hashBuildingID = location.hash.substring(1,location.hash.length)
+    for (name in buildings) {
+      if (parseInt(buildings[name]['id']) === parseInt(hashBuildingID)) {
+        buildingID = buildings[name].id;
+        while (buildingID.length < 7) {
+          buildingID = '0' + buildingID;
+        }
+        location.hash = buildingID;
+
+        var filter = ["==", "BLDG_NUM", buildingID];
+        $("#tags").val(name);
+
+        var coordinates = [buildings[name].coordinates[0], buildings[name].coordinates[1]];
+        center = coordinates;
+        zoom = 16.5;
+
+        showClear();
+        break;
+      }
+    }
+  }
+
+  mapboxgl.accessToken = 'pk.eyJ1IjoiYWFyb25kZW5uaXMiLCJhIjoiem5LLURoYyJ9.T3tswGTI5ve8_wE-a02cMw';
+  var map = new mapboxgl.Map({
+      container: 'map', // container id
+      style: 'mapbox://styles/aarondennis/cij4mel36000690m3lqaixibk', //stylesheet location
+      center: center,
+      zoom: zoom,
+      bearing: -44.5,
+      pitch: 0,
+      maxBounds: bounds,
+      maxZoom: 20,
+      preserveDrawingBuffer: true
+  });
+
+  // disable map rotation using touch rotation gesture
+  map.touchZoomRotate.disableRotation();
+
+  $("#download").on('click', function() {
+    var url = map.getCanvas().toDataURL();
+    window.open(url, '_blank');
+  });
+
   $("#tags").autocomplete({
     source: availableTags,
     minLength: 2,
     select: function(event, ui) {
       zoomToLocation(ui.item.label);
+      showClear();
     },
     open: function(event, ui) {
       var query = $("#tags").val();
       if (buildings[query]) {
         zoomToLocation(query);
+        showClear();
       }
     }
   });
+
+  $('#tags').on('change', function() {
+    console.log('uh...');
+  })
 
   function zoomToLocation(query) {
     buildingID = buildings[query].id;
@@ -179,6 +227,56 @@ $.getJSON('./places.geojson', function(data) {
     var coordinates = [buildings[query].coordinates[0], buildings[query].coordinates[1]];
     map.flyTo({center: coordinates, zoom: 16.5});
   }
+
+  map.on('load', function() {
+    map.setFilter('psu-buildings-highlight-fill', filter);
+    map.setFilter('psu-buildings-highlight-case', filter);
+    map.setFilter('psu-building-label-highlight', filter);
+  });
+
+  $('#clear').on('click', function() {
+    $('#tags').val('');
+    location.hash = '';
+    filter = ["==", "BLDG_NUM", ""];
+    map.setFilter('psu-buildings-highlight-fill', filter);
+    map.setFilter('psu-buildings-highlight-case', filter);
+    map.setFilter('psu-building-label-highlight', filter);
+    $('#clear').css('opacity', 0);
+    $('#clear').css('pointer-events', 'none');
+  });
+
+  function showClear() {
+    $('#clear').css('opacity', 0.5);
+    $('#clear').css('pointer-events', 'all');
+  }
+
+  $.event.special.tap = {
+    setup: function(data, namespaces) {
+        var $elem = $(this);
+        $elem.bind('touchstart', $.event.special.tap.handler)
+             .bind('touchmove', $.event.special.tap.handler)
+             .bind('touchend', $.event.special.tap.handler);
+    },
+
+    teardown: function(namespaces) {
+        var $elem = $(this);
+        $elem.unbind('touchstart', $.event.special.tap.handler)
+             .unbind('touchmove', $.event.special.tap.handler)
+             .unbind('touchend', $.event.special.tap.handler);
+    },
+
+    handler: function(event) {
+        event.preventDefault();
+        var $elem = $(this);
+        $elem.data(event.type, 1);
+        if (event.type === 'touchend' && !$elem.data('touchmove')) {
+            event.type = 'tap';
+            $.event.handle.apply(this, arguments);
+        } else if ($elem.data('touchend')) {
+            $elem.removeData('touchstart touchmove touchend');
+        }
+    }
+};
 
 });
 
