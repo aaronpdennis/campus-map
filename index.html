@@ -31,6 +31,8 @@
        #search {
          margin-bottom: 0;
          margin-top: 0;
+         padding: 0;
+         padding-bottom: 1em;
        }
        .options {
          padding-top: 0;
@@ -43,7 +45,7 @@
          max-width: 1.2em;
          opacity: 0;
          float: left;
-         margin-top: 0.8em;
+         margin-top: 1em;
          margin-right: 0.6em;
          pointer-events: none;
        }
@@ -51,11 +53,15 @@
          opacity: 1;
          cursor: pointer;
        }
+       #searchField {
+           width: 18em;
+           float: left;
+           padding-top: 0.5em;
+           padding-bottom: 1em;
+       }
        input {
-         min-width: 18em;
-         max-width: 18em;
-         margin-left: 0em;
-         margin-right: 0;
+         display: inline;
+         max-width: 13em;
        }
        .ui-menu {
          background: white;
@@ -97,18 +103,17 @@
         </button>
         <img class="image-responsive navbar-left" src='./psu.png' /><a class="navbar-brand" href="#"></a>
         <form id='search' class="navbar-form navbar-left" role="search">
-          <div class="form-group">
-            <div class="ui-widget row">
+          <div id="searchField" class="form-group">
               <img src='./x.svg' id="clear" />
               <input type='text' class='form-control' id="tags" placeholder="Search for a building...">
-            </div>
           </div>
         </form>
       </div>
 
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav navbar-right">
-          <li><a id="download" class="options" href="#">Download </a></li>
+          <li><a id="download" class="options" href="#">Download</a></li>
+          <li><a id="feedback" class="options" href="https://docs.google.com/forms/d/136C6vVdbssm2qbGNO1sb9cp_kdK1Ppx9lqQ_KOxyx9g/viewform" target="_blank">Feedback</a></li>
           <!--<li class="dropdown options">
             <a href="#" class="dropdown-toggle options" data-toggle="dropdown" role="button" aria-expanded="false">Options <span class="caret"></span></a>
             <ul class="dropdown-menu" role="menu">
